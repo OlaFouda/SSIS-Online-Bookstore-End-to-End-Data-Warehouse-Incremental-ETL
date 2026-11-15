@@ -1,3 +1,4 @@
+
 /*-----------------------------------------------------------------------
     Project: Online Bookstore Data Warehouse
     Phase A: Step 2 - Creating ODS Tables
@@ -15,10 +16,17 @@
     Note:
         Data loading is handled by SSIS packages.
         This script is intended for initial database setup.
+
+    ISNEW Codes:
+        0 = IGNORE
+        1 = INSERT
+        2 = UPDATE
+        3 = DELETE
  -----------------------------------------------------------------------*/
 
 USE Bookstore_DWH;
 GO
+
 
 --============ Step 1: Create the ODS tables ===================
 
@@ -83,7 +91,9 @@ BEGIN
         Quantity NVARCHAR(10) NULL,
         UnitPrice NVARCHAR(30) NULL,
         DiscountAmount NVARCHAR(30) NULL,
-        PromotionID NVARCHAR(100) NULL
+        PromotionID NVARCHAR(100) NULL,
+        ISNEW INT NOT NULL
+            CONSTRAINT DF_ods_Sales_ISNEW DEFAULT (0)
     );
 END;
 GO
