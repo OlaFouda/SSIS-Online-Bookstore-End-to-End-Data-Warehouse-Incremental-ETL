@@ -1,13 +1,8 @@
-
 # Online Bookstore Data Warehouse | SSIS & SQL Server
 
-An end-to-end Data Warehouse project built using **SQL Server Integration Services (SSIS)** and **Microsoft SQL Server**, designed to demonstrate ETL development, incremental data loading, data quality management, dimensional modeling, and analytical data preparation.
+An end-to-end Data Warehouse project developed using **SQL Server Integration Services (SSIS)** and **Microsoft SQL Server**, demonstrating ETL pipeline development, incremental data loading, data quality management, dimensional modeling, and analytical data preparation.
 
-
-<img width="1536" height="1024" alt="c72630fe-76fa-4753-a8da-e2e3b7f7e30d" src="https://github.com/user-attachments/assets/b453c1f2-ba24-4e5d-abd2-c3b2931ad0bf" />
-
-
-The project follows a layered Data Warehouse architecture, extracting data from an Azure SQL Database, processing it through ODS and Staging layers, and loading a dimensional model designed for analytical queries and reporting.
+The project follows a layered Data Warehouse architecture, integrating data from an Azure SQL Database, processing it through Operational Data Store (ODS) and Staging layers, and loading a dimensional model designed for analytical queries and reporting.
 
 **Project Status:** In Progress
 
@@ -36,21 +31,21 @@ The project follows a layered Data Warehouse architecture, extracting data from 
 
 # 1. Project Overview
 
-This project focuses on building an ETL pipeline and dimensional Data Warehouse for an online bookstore.
+This project focuses on designing and implementing an ETL pipeline and dimensional Data Warehouse for an online bookstore.
 
 The source data is hosted in an Azure SQL Database, while the Data Warehouse is hosted on a local Microsoft SQL Server instance.
 
-SSIS is used as the primary ETL and orchestration tool to extract, transform, validate, and load data across the different layers.
+SSIS serves as the primary ETL and orchestration tool, responsible for extracting, transforming, validating, and loading data across the different layers.
 
 The architecture consists of three main data processing layers:
 
-- **Operational Data Store (ODS):** Stores extracted source data.
+- **Operational Data Store (ODS):** Maintains extracted source data.
 - **Staging (STG):** Handles data cleansing, standardization, and validation.
-- **Data Warehouse (DWH):** Stores business-oriented dimensional data in a star-schema-oriented model.
+- **Data Warehouse (DWH):** Stores business-oriented dimensional data designed for analytical workloads.
 
-The project also incorporates incremental loading to process new and changed records rather than repeatedly reloading the entire dataset.
+The project incorporates incremental loading to process new and modified records rather than repeatedly reloading the entire dataset.
 
-The overall objective is to simulate an ETL solution similar to those used in enterprise data engineering environments.
+The overall objective is to develop a structured, maintainable ETL solution that reflects data engineering practices used in enterprise data environments.
 
 # 2. Business Scenario
 
@@ -68,7 +63,7 @@ The business needs to understand:
 - Promotion effectiveness.
 - The impact of individual promotional benefits on sales.
 
-The operational database is designed to support transactions, whereas analytical queries require integrated, structured, and historically useful data.
+The operational database is designed to support transactions, whereas analytical workloads require integrated, structured, and historically useful data.
 
 A dedicated Data Warehouse provides a foundation for these analytical requirements.
 
@@ -77,23 +72,27 @@ A dedicated Data Warehouse provides a foundation for these analytical requiremen
 The project aims to demonstrate the following data engineering capabilities:
 
 ### Data Integration
+
 - Extract data from an Azure SQL Database.
-- Transfer source data into a local SQL Server environment.
+- Integrate source data into a local SQL Server environment.
 - Manage reusable connections through SSIS Connection Managers.
 
 ### ETL Development
+
 - Design SSIS Control Flow workflows.
 - Develop SSIS Data Flow pipelines.
 - Apply data transformations and standardization.
 - Load data across multiple warehouse layers.
 
 ### Incremental Loading
+
 - Identify new and modified records.
 - Avoid unnecessary full reloads.
 - Apply appropriate insert and update operations.
 - Maintain load information for subsequent executions.
 
 ### Data Quality
+
 - Detect invalid and missing values.
 - Validate dimension references.
 - Handle unmatched lookup records.
@@ -101,12 +100,14 @@ The project aims to demonstrate the following data engineering capabilities:
 - Isolate rejected records where necessary.
 
 ### Dimensional Modeling
+
 - Design dimension and fact tables.
 - Implement surrogate keys.
 - Define fact table grain.
 - Handle relationships between promotions and promotional benefits.
 
 ### ETL Orchestration
+
 - Control package execution order.
 - Implement task dependencies.
 - Handle failures.
@@ -114,16 +115,16 @@ The project aims to demonstrate the following data engineering capabilities:
 
 # 4. Technology Stack
 
-| Technology | Purpose |
-|---|---|
-| Azure SQL Database | Source operational database |
-| Microsoft SQL Server | Local Data Warehouse |
-| SQL Server Management Studio (SSMS) | Database administration and SQL development |
-| Visual Studio Community | SSIS project development |
-| SQL Server Integration Services (SSIS) | ETL and workflow orchestration |
-| T-SQL | Database objects, queries, and SQL-based transformations |
-| SQL Server Agent | Planned ETL scheduling and execution |
-| Git & GitHub | Version control and project documentation |
+| Technology                             | Purpose                                                  |
+| -------------------------------------- | -------------------------------------------------------- |
+| Azure SQL Database                     | Source operational database                              |
+| Microsoft SQL Server                   | Local Data Warehouse                                     |
+| SQL Server Management Studio (SSMS)    | Database administration and SQL development              |
+| Visual Studio Community                | SSIS project development                                 |
+| SQL Server Integration Services (SSIS) | ETL and workflow orchestration                           |
+| T-SQL                                  | Database objects, queries, and SQL-based transformations |
+| SQL Server Agent                       | Planned ETL scheduling and execution                     |
+| Git & GitHub                           | Version control and project documentation                |
 
 # 5. Source System
 
@@ -131,17 +132,14 @@ The source database is hosted in Azure SQL.
 
 **Source Database:** `datab5`
 
-The project extracts data from four source tables.
+The project integrates data from four source tables:
 
-| Source Table | Description | Initial Record Count |
-|---|---|---:|
-| Categories | Book category information | 6 |
-| Books | Book details and pricing | 30 |
-| Promotions | Promotional packages and their benefits | 16 |
-| Sales | Sales transaction details | 120 |
-| **Total** | | **172** |
-
-*These counts represent the initial source dataset and are not necessarily the counts of records processed during every incremental execution.*
+| Source Table | Description                             |
+| ------------ | --------------------------------------- |
+| Categories   | Book category information               |
+| Books        | Book details and pricing                |
+| Promotions   | Promotional packages and their benefits |
+| Sales        | Sales transaction details               |
 
 ## 5.1 Source Table Relationships
 
@@ -166,23 +164,13 @@ It contains:
 
 A single promotion package can contain multiple benefits.
 
-For example:
-
-| PromotionBenefitID | PromotionID | BenefitName | Discount |
-|---|---|---|---:|
-| 1 | 10 | Seasonal Discount | 10% |
-| 2 | 10 | Loyalty Discount | 5% |
-| 3 | 10 | Special Offer | 3% |
-
-The total discount associated with promotion package 10 is the sum of its benefits.
-
-**Total package discount = 10% + 5% + 3% = 18%**
+The total discount associated with a promotion package is calculated by aggregating its individual benefits.
 
 The Sales table contains a single `PromotionID` attribute referencing the package.
 
-Therefore, promotional benefits must be aggregated by `PromotionID` before joining the promotion information to sales. Joining individual benefit records directly to sales would multiply sales rows when a package contains multiple benefits.
+Therefore, promotional benefits must be aggregated by `PromotionID` before joining the promotion information to Sales. Joining individual benefit records directly to Sales would multiply sales rows when a package contains multiple benefits.
 
-This is an important consideration for maintaining the correct fact table grain.
+This is an important consideration for maintaining the correct fact table grain and ensuring accurate analytical calculations.
 
 # 6. Architecture
 
@@ -298,7 +286,7 @@ Calculate the required measures, including gross amount, discount amount, and ne
 
 ### Step 6: Validate and Audit
 
-Verify record counts, data consistency, and load results.
+Verify data consistency and load results.
 
 Record execution information and handle rejected records.
 
@@ -310,12 +298,12 @@ Instead of extracting and processing every source record during every execution,
 
 ## 8.1 Full Load vs. Incremental Load
 
-| Full Load | Incremental Load |
-|---|---|
-| Processes the entire dataset | Processes new or changed records |
-| Can involve unnecessary data movement | Reduces unnecessary data movement |
-| Useful for initial population | Useful for subsequent executions |
-| Can become expensive as data grows | More efficient for growing datasets |
+| Full Load                             | Incremental Load                    |
+| ------------------------------------- | ----------------------------------- |
+| Processes the entire dataset          | Processes new or changed records    |
+| Can involve unnecessary data movement | Reduces unnecessary data movement   |
+| Useful for initial population         | Useful for subsequent executions    |
+| Can become expensive as data grows    | More efficient for growing datasets |
 
 The initial execution populates the target tables.
 
@@ -369,18 +357,18 @@ The implementation should not assume a modification timestamp exists until the a
 
 The incremental process can classify records according to their required action:
 
-| ISNEW | Action | Description |
-|---:|---|---|
-| 0 | IGNORE | No change detected |
-| 1 | INSERT | New record |
-| 2 | UPDATE | Existing record with changed attributes |
-| 3 | DELETE | Record identified for deletion |
+| ISNEW | Action | Description                             |
+| ----: | ------ | --------------------------------------- |
+|     0 | IGNORE | No change detected                      |
+|     1 | INSERT | New record                              |
+|     2 | UPDATE | Existing record with changed attributes |
+|     3 | DELETE | Record identified for deletion          |
 
 This classification provides a consistent way to determine what should happen to each record.
 
 The corresponding SSIS workflow can route records into the appropriate processing paths.
 
-**Important:** A record marked for deletion should not automatically be physically deleted from every warehouse layer. The appropriate handling depends on the business requirements and the selected dimensional modeling strategy.
+**Important:** A record marked for deletion should not automatically be physically deleted from every warehouse layer. The appropriate handling depends on business requirements and the selected dimensional modeling strategy.
 
 ## 8.4 Insert and Update Operations
 
@@ -423,12 +411,12 @@ The current proposed model contains five dimensions and one fact table.
 
 ## 9.1 Dimension Tables
 
-| Dimension | Description | Key |
-|---|---|---|
-| DimDate | Calendar attributes for sales analysis | Date_SK |
-| DimBook | Book and category information | Book_SK |
-| DimPromotion | Promotional package information | Promotion_SK |
-| DimPaymentMethod | Payment method descriptions | PaymentMethod_SK |
+| Dimension           | Description                                           | Key                 |
+| ------------------- | ----------------------------------------------------- | ------------------- |
+| DimDate             | Calendar attributes for sales analysis                | Date_SK             |
+| DimBook             | Book and category information                         | Book_SK             |
+| DimPromotion        | Promotional package information                       | Promotion_SK        |
+| DimPaymentMethod    | Payment method descriptions                           | PaymentMethod_SK    |
 | DimPromotionBenefit | Individual benefits belonging to promotional packages | PromotionBenefit_SK |
 
 ### DimDate
@@ -506,18 +494,21 @@ This means every fact record represents one individual sales line, not an entire
 The table contains:
 
 **Transaction identifiers**
+
 - SalesLineID
 - SaleID
 - ReceiptNumber
 - LineNumber
 
 **Dimension foreign keys**
+
 - Book_SK
 - Date_SK
 - Promotion_SK
 - PaymentMethod_SK
 
 **Measures**
+
 - Quantity
 - UnitPrice
 - GrossAmount
@@ -558,4 +549,331 @@ One promotion package contains multiple benefits, while multiple sales lines can
 
 The current model stores the package reference in FactSales and stores individual benefits in DimPromotionBenefit.
 
-If the requirement is to analyze sales measures against individual benefits, a separate bridge table may be
+If the requirement is to analyze sales measures against individual benefits, a separate bridge table may be needed to associate sales lines with their promotional benefits.
+
+This design decision must be resolved before finalizing the dimensional model.
+
+A bridge table should not be introduced simply because the source contains multiple benefit records. Its necessity depends on the analytical requirements and the desired fact-to-benefit relationship.
+
+# 10. Data Quality and Validation
+
+Data quality is addressed during the Staging and Data Warehouse loading processes.
+
+The objective is to prevent invalid data from silently entering the analytical model.
+
+### Data Type Validation
+
+Ensure that values can be converted into the expected target data types.
+
+Examples:
+
+- Numeric values must be valid numbers.
+- Dates must be valid dates.
+- Discount percentages must be valid decimal values.
+
+### Missing Value Handling
+
+Identify required fields containing NULL or missing values.
+
+Determine whether the record should:
+
+- Receive a default value.
+- Be handled through an unknown dimension member.
+- Be rejected or quarantined.
+
+### Duplicate Detection
+
+Identify duplicate source or staging records.
+
+For FactSales, enforce the declared sales-line grain and prevent duplicate fact records.
+
+### Referential Integrity
+
+Validate relationships between facts and dimensions.
+
+For example, a sales record referencing an unknown book should not silently enter the fact table without an appropriate handling strategy.
+
+### Dimension Validation
+
+Use SSIS Lookup transformations to identify matching dimension records.
+
+Handle unmatched records through an appropriate error or no-match path.
+
+A common warehouse technique is to create special dimension members, such as an Unknown member with a surrogate key of `-1`, where that approach is appropriate.
+
+### Quarantine Records
+
+Records that cannot be processed safely may be redirected into quarantine tables.
+
+This allows the pipeline to preserve rejected records for investigation without necessarily failing the entire batch.
+
+# 11. SSIS Implementation
+
+SSIS is used to implement the ETL pipeline.
+
+The project is developed using Visual Studio Community with the SQL Server Integration Services extension.
+
+## 11.1 Control Flow
+
+Control Flow defines the execution sequence and orchestration of ETL operations.
+
+It determines:
+
+- Which tasks execute.
+- Their execution order.
+- Dependencies between tasks.
+- What happens when a task succeeds or fails.
+- Whether tasks execute sequentially or in parallel.
+
+Example:
+
+```text
+       Extract Source
+              |
+              v
+           Load ODS
+              |
+              v
+         Load Staging
+              |
+              v
+        Load Dimensions
+              |
+              v
+          Load Facts
+              |
+              v
+        Validate Results
+```
+
+## 11.2 Data Flow
+
+Data Flow defines how records move through the ETL pipeline.
+
+A typical Data Flow contains:
+
+```text
+       OLE DB Source
+              |
+              v
+       Transformations
+              |
+              v
+       Lookup / Validation
+              |
+              v
+       Conditional Split
+              |
+              v
+       OLE DB Destination
+```
+
+It is responsible for extracting, processing, and loading individual rows.
+
+## 11.3 SSIS Components
+
+| Component              | Purpose                                       |
+| ---------------------- | --------------------------------------------- |
+| OLE DB Source          | Extract records from relational sources       |
+| OLE DB Destination     | Load records into SQL Server tables           |
+| Lookup                 | Match incoming records against reference data |
+| Conditional Split      | Route records according to conditions         |
+| Derived Column         | Create or modify column values                |
+| Data Conversion        | Convert data types                            |
+| Aggregate              | Group and aggregate records                   |
+| Merge Join             | Combine sorted data streams                   |
+| Sort                   | Sort records based on selected columns        |
+| Execute SQL Task       | Execute SQL statements                        |
+| Sequence Container     | Group related Control Flow tasks              |
+| Precedence Constraints | Control task execution dependencies           |
+
+Components should be selected according to actual transformation requirements rather than using every available transformation.
+
+# 12. Error Handling and Logging
+
+A reliable ETL pipeline needs to provide visibility into its execution.
+
+The planned error-handling and logging strategy includes:
+
+### Error Handling
+
+- Handle connection failures.
+- Capture transformation errors.
+- Redirect invalid rows where appropriate.
+- Handle unmatched dimension lookups.
+- Prevent incomplete loads from being treated as successful.
+
+### Logging and Auditing
+
+Maintain information such as:
+
+- Package name.
+- Execution start time.
+- Execution end time.
+- Execution status.
+- Source record count.
+- Inserted record count.
+- Updated record count.
+- Rejected record count.
+- Error details.
+
+This information helps troubleshoot failures and monitor pipeline performance.
+
+# 13. Project Structure
+
+The intended repository structure is:
+
+```text
+OnlineBookstore_DWH/
+│
+├── README.md
+│
+├── docs/
+│   ├── architecture/
+│   │   └── architecture.png
+│   │
+│   └── data-model/
+│       └── dimensional-model.png
+│
+├── sql/
+│   ├── 01_Create_ODS.sql
+│   ├── 02_Create_STG.sql
+│   ├── 03_Create_DWH.sql
+│   └── 04_Validation_Queries.sql
+│
+├── SSIS/
+│   └── OnlineBookstore_SSIS/
+│       ├── Connection Managers/
+│       ├── Packages/
+│       └── Project.params
+│
+└── .gitignore
+```
+
+*This is the proposed organization; filenames and folders should be adjusted to match the actual repository as development progresses.*
+
+# 14. Setup and Execution
+
+## Prerequisites
+
+- Microsoft SQL Server.
+- SQL Server Management Studio.
+- Visual Studio Community.
+- SQL Server Integration Services Projects extension.
+- Access to the Azure SQL source database.
+- Appropriate database permissions.
+
+## Step 1: Clone the Repository
+
+```bash
+git clone <repository-url>
+```
+
+## Step 2: Prepare the Destination Database
+
+Create the local database:
+
+```sql
+CREATE DATABASE Bookstore_DWH;
+```
+
+## Step 3: Create the Database Layers
+
+Execute the SQL scripts in the following order:
+
+1. ODS schema and tables.
+2. Staging schema and tables.
+3. DWH schema and tables.
+
+## Step 4: Configure SSIS Connections
+
+Configure the connection managers for:
+
+- Azure SQL source database.
+- Local SQL Server destination database.
+
+Connection details should be configured for the local environment rather than hardcoded into shared project files.
+
+## Step 5: Open the SSIS Project
+
+Open the SSIS solution in Visual Studio.
+
+Review the connection managers and package configurations.
+
+## Step 6: Execute the ETL Pipeline
+
+Execute the packages according to their dependencies.
+
+The initial execution performs the initial data load.
+
+Subsequent executions follow the incremental loading process.
+
+*Exact execution instructions will be updated as the packages are implemented and tested.*
+
+# 15. Key Engineering Concepts
+
+This project provides practical exposure to several important data engineering concepts.
+
+| Concept              | Application                                            |
+| -------------------- | ------------------------------------------------------ |
+| ETL                  | Extracting, transforming, and loading operational data |
+| Incremental Loading  | Processing new and modified records                    |
+| Data Integration     | Combining data from source and destination systems     |
+| ODS                  | Maintaining extracted operational data                 |
+| Staging              | Cleansing and validating incoming records              |
+| Dimensional Modeling | Organizing data for analytical workloads               |
+| Star Schema          | Structuring dimensions around a central fact           |
+| Surrogate Keys       | Providing warehouse-generated identifiers              |
+| Fact Table Grain     | Defining the level of detail represented by each fact  |
+| Lookup Operations    | Resolving dimension references                         |
+| Data Quality         | Identifying and handling invalid data                  |
+| Error Handling       | Managing failed or rejected records                    |
+| Orchestration        | Coordinating multiple ETL operations                   |
+| Auditing             | Tracking pipeline execution and record counts          |
+
+# 16. Current Progress and Future Enhancements
+
+The project is being developed incrementally.
+
+## Current Progress
+
+- [x] Defined the online bookstore business scenario.
+- [x] Identified the source database and source tables.
+- [x] Established the initial layered architecture.
+- [x] Created the SSIS project in Visual Studio.
+- [x] Explored the Control Flow and Data Flow concepts.
+- [x] Drafted the initial DWH dimensional table definitions.
+- [ ] Complete source schema inspection and data profiling.
+- [ ] Finalize the ODS and Staging designs.
+- [ ] Finalize the dimensional model and promotion-benefit relationship.
+- [ ] Implement SSIS source extraction.
+- [ ] Implement ODS loading.
+- [ ] Implement Staging transformations and validations.
+- [ ] Implement dimension loading.
+- [ ] Implement fact loading.
+- [ ] Implement and test incremental loading.
+- [ ] Implement error handling and auditing.
+- [ ] Develop master package orchestration.
+- [ ] Configure SQL Server Agent execution.
+- [ ] Test the complete pipeline.
+- [ ] Finalize documentation and deployment.
+
+## Future Enhancements
+
+Potential improvements include:
+
+- Implementing Slowly Changing Dimensions (SCD), particularly Type 1 and Type 2.
+- Supporting late-arriving dimension records.
+- Introducing a dedicated ETL audit framework.
+- Implementing robust failure recovery.
+- Improving package configuration and parameter management.
+- Deploying packages to the SSIS Catalog.
+- Integrating the warehouse with Power BI for reporting and visualization.
+
+---
+
+## Final Note
+
+This project is being developed with an emphasis on understanding the engineering decisions behind each ETL component, rather than simply building a collection of SSIS packages.
+
+The goal is to create a maintainable and reliable Data Warehouse pipeline that demonstrates practical skills in SQL Server, SSIS, incremental ETL, data quality, dimensional modeling, and data integration.
